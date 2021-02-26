@@ -18,12 +18,19 @@ async function authenticate({ username, password }) {
       if (user.email !== username || password !== user.password) {
         jwtObj = "Username or password invalid.";
       } else {
-        const token = jwt.sign({ sub: user.email }, config.secret, {});
 
-        jwtObj = {
+       let obj = {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+        }
+
+        const token = jwt.sign(obj, config.secret, {});
+
+        jwtObj = {
+          // email: user.email,
+          // firstName: user.firstName,
+          // lastName: user.lastName,
           token,
         };
       }
