@@ -30,82 +30,88 @@ db.transaction = require("./user.transactions.model")(sequelize, Sequelize);
 
 
 
-db.userSettings.belongsToMany(db.users, {
-  through: "user_settings",
+db.users.hasMany(db.category, { as: "category" ,foreignKey:'userId'});
+db.category.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "users",
+});
+
+
+db.users.hasMany(db.userSettings, {as: "userSettings" ,foreignKey:'userId'});
+db.userSettings.belongsTo(db.users, {
   as: "users",
   foreignKey: "userId",
 });
-db.users.belongsToMany(db.userSettings, {
-  through: "user_settings",
-  as: "userSettings",
-  foreignKey: "usersSettingsId",
-});
 
-db.users.hasMany(db.category, { as: "category" });
-db.category.belongsTo(db.users, {
-  foreignKey: "id",
-  as: "users",
-});
 
-db.users.hasMany(db.subCategory, { as: "subCategory" });
-db.subCategory.belongsTo(db.users, {
-  foreignKey: "id",
-  as: "users",
-});
 
-db.category.hasMany(db.subCategory, { as: "subCategory" });
+// db.users.hasMany(db.category, { as: "category" });
+// db.category.belongsTo(db.users, {
+//   foreignKey: "UserId",
+//   as: "users",
+// });
+
+db.category.hasMany(db.subCategory, { as: "subCategory",foreignKey:'categoryId' });
 db.subCategory.belongsTo(db.category, {
-  foreignKey: "id",
+  foreignKey: "categoryId",
   as: "category",
 });
 
-db.users.hasMany(db.items, { as: "items" });
-db.items.belongsTo(db.users, {
-  foreignKey: "id",
+db.users.hasMany(db.subCategory, { as: "subCategory" ,foreignKey:'userId'});
+db.subCategory.belongsTo(db.users, {
+  foreignKey: "userId",
   as: "users",
 });
 
-db.subCategory.hasMany(db.items, { as: "items" });
+
+
+db.users.hasMany(db.items, { as: "items"  ,foreignKey:'userId'});
+db.items.belongsTo(db.users, {
+  foreignKey: "userId",
+  as: "users",
+});
+
+db.subCategory.hasMany(db.items, { as: "items",foreignKey:'subCategoryId' });
 db.items.belongsTo(db.subCategory, {
-  foreignKey: "id",
+  foreignKey: "subCategoryId",
   as: "items",
 });
 
-db.users.hasMany(db.items, { as: "account" });
+db.users.hasMany(db.items, { as: "account",foreignKey:'userId' });
 db.account.belongsTo(db.users, {
-  foreignKey: "id",
+  foreignKey: "userId",
   as: "users",
 });
 
-db.users.hasMany(db.shop, { as: "shop" });
+db.users.hasMany(db.shop, { as: "shop" ,foreignKey:'userId'});
 db.shop.belongsTo(db.users, {
-  foreignKey: "id",
+  foreignKey: "userId",
   as: "users",
 });
 
 
 
-db.users.hasMany(db.transaction, { as: "transaction" });
+db.users.hasMany(db.transaction, { as: "transaction",foreignKey:'userId' });
 db.transaction.belongsTo(db.users, {
-  foreignKey: "id",
+  foreignKey: "userId",
   as: "users",
 });
 
-db.account.hasMany(db.transaction, { as: "transaction" });
+db.account.hasMany(db.transaction, { as: "transaction" ,foreignKey:'accountId'});
 db.transaction.belongsTo(db.account, {
-  foreignKey: "id",
+  foreignKey: "accountId",
   as: "account",
 });
 
-db.items.hasMany(db.transaction, { as: "transaction" });
+db.items.hasMany(db.transaction, { as: "transaction",foreignKey:'itemCode' });
 db.transaction.belongsTo(db.items, {
-  foreignKey: "id",
+  foreignKey: "itemCode",
   as: "items",
 });
 
-db.shop.hasMany(db.transaction, { as: "transaction" });
+db.shop.hasMany(db.transaction, { as: "transaction" ,foreignKey:'shopId'});
 db.transaction.belongsTo(db.shop, {
-  foreignKey: "id",
+  foreignKey: "shopId",
   as: "shop",
 });
 

@@ -23,6 +23,7 @@ async function authenticate({ username, password }) {
           email: user.email,
           firstName: user.firstName,
           lastName: user.lastName,
+          id:user.id
         }
 
         const token = jwt.sign(obj, config.secret, {});

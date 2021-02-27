@@ -10,9 +10,6 @@ module.exports = (sequelize, Sequelize) => {
       },
       icon: {
         type: Sequelize.STRING
-      },
-      icon: {
-        type: Sequelize.STRING
       }
       ,
       updatedDate: {

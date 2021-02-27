@@ -5,12 +5,19 @@ var axios = require('axios');
 const { static } = require('express');
 const internal_server_err ='Internal Server Error'
 
+const err_500 ={
+    status:500,
+    display:'Internal Server Error.',
+    data:null
+}
+
 exports.login =async(req, res, next)=>{
   
    userService.authenticate(req.body).then(u =>{
-        res.send(u);
+        res.status(200).send(u);
     }).catch(err=>{
         console.log(err);
+        res.status(500).send(err_500);
     });
 };
 

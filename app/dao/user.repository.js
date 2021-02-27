@@ -10,6 +10,7 @@ module.exports = {
 };
 
 
+
 async function isEmailUsed (email) {
 
     const count = await sequelize.query( 'SELECT count(email) as count FROM Users WHERE email = ?',{
@@ -43,3 +44,4 @@ async function createUser (user) {
   return user
 
 }
+

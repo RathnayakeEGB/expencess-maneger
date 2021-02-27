@@ -15,6 +15,7 @@ db.sequelize.sync();
 
 require('./app/routes/users.routes')(app);
 require("./app/routes/user_settings.routes")(app);
+require("./app/routes/category.routes")(app);
 
 app.use(errorHandler);
 const PORT = process.env.PORT || 8080;
