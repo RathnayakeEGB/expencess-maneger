@@ -14,7 +14,15 @@ module.exports={
     delete_category_one,
     hasSubCategory,
     hasItems,
-    delete_category_two
+    delete_category_two,
+    hasItems_transactions,
+    delete_items,
+    get_all_categories_for_user,
+    get_all_sub_categories_for_category,
+    get_all_Items_for_sub_category,
+    update_sub_category,
+    update_category,
+    update_items
 }
 
 async function create_level_one_category(category_obj){
@@ -53,7 +61,8 @@ async function create_level_two_category(category_obj){
  async function delete_category_one(id){
 
   return await category.destroy({where:{id:id}}).then((obj) => {
-      return obj.dataValues;
+    console.log('AAA-->>> ', obj);
+      return obj;
     }).catch((err) => {
       console.log(err);
       return 500;
@@ -64,6 +73,17 @@ async function create_level_two_category(category_obj){
  async function delete_category_two(id){
 
   return await subCategory.destroy({where:{id:id}}).then((obj) => {
+      return obj.dataValues;
+    }).catch((err) => {
+      console.log(err);
+      return 500;
+    })
+ 
+ }
+
+ async function delete_items(id){
+
+  return await items.destroy({where:{id:id}}).then((obj) => {
       return obj.dataValues;
     }).catch((err) => {
       console.log(err);
@@ -91,3 +111,73 @@ async function hasItems (id) {
    );
    return Number( count[0].count);
 }
+
+async function hasItems_transactions (id) {
+
+  const count = await sequelize.query( 'SELECT count(id) as count FROM UserTransactions WHERE itemCode = ?',{
+       replacements: [id],
+       type: QueryTypes.SELECT
+     }
+   );
+   return Number( count[0].count);
+}
+
+async function get_all_categories_for_user (id) {
+
+  const object = await sequelize.query( 'SELECT * FROM Categories  WHERE userId =?',{
+       replacements: [id],
+       type: QueryTypes.SELECT
+     }
+   );
+   return object;
+}
+
+async function get_all_sub_categories_for_category (id) {
+
+  const objects = await sequelize.query( 'SELECT * FROM Sub_Categories  WHERE categoryId =?',{
+       replacements: [id],
+       type: QueryTypes.SELECT
+     }
+   );
+   return objects;
+}
+async function get_all_Items_for_sub_category (id) {
+
+  const objects = await sequelize.query( 'SELECT * FROM Items  WHERE subCategoryId =?',{
+       replacements: [id],
+       type: QueryTypes.SELECT
+     }
+   );
+   return objects;
+}
+
+async function update_items(object){
+
+  return await items.update(object,{where:{id:object.id}}).then((obj) => {
+      return obj;
+    }).catch((err) => {
+      console.log(err);
+      return 500;
+    })
+ 
+ }
+ async function update_sub_category(object){
+
+  return await subCategory.update(object,{where:{id:object.id}}).then((obj) => {
+      return obj;
+    }).catch((err) => {
+      console.log(err);
+      return 500;
+    })
+ 
+ }
+ async function update_category(object){
+
+  return await subCategory.update(object,{where:{id:object.id}}).then((obj) => {
+      return obj;
+    }).catch((err) => {
+      console.log(err);
+      return 500;
+    })
+ 
+ }

@@ -5,6 +5,8 @@ const categoryRepo = require("../dao/category.repository");
 module.exports = {
   create_category,
   delete_category,
+  get_all_categories_for_user,
+  update_categories_items
 };
 
 async function create_category(category_obj) {
@@ -67,9 +69,10 @@ async function create_category(category_obj) {
 async function delete_category({ categoryId, levelCode }) {
   obj = null;
 
-  console.log("OBJ-->> XXX", categoryId);
   if (levelCode == 1) {
-    obj = await categoryRepo.hasSubCategory(categoryId) .then((data) => {
+    obj = await categoryRepo
+      .hasSubCategory(categoryId)
+      .then((data) => {
         if (data > 0) {
           return {
             status: 400,
@@ -77,39 +80,127 @@ async function delete_category({ categoryId, levelCode }) {
             data: null,
           };
         } else {
-          return categoryRepo.delete_category_one(categoryId).then((data) => {
+          categoryRepo
+            .delete_category_one(categoryId)
+            .then((data) => {
               return data;
-            }) .catch((err) => {
+            })
+            .catch((err) => {
               console.log(err);
             });
         }
-      }) .catch((err) => {
+      })
+      .catch((err) => {
         console.log(err);
       });
+      
   } else if (levelCode == 2) {
+    obj = await categoryRepo
+      .hasItems(categoryId)
+      .then((data) => {
+        if (data > 0) {
+          return {
+            status: 400,
+            display: "Sub Category In a Relationship.",
+            data: null,
+          };
+        } else {
+          return categoryRepo
+            .delete_category_two(categoryId)
+            .then((data) => {
+              return data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  } else {
+    obj = await categoryRepo
+      .hasItems_transactions(categoryId)
+      .then((data) => {
+        if (data > 0) {
+          return {
+            status: 400,
+            display: "Sub Category In a Relationship.",
+            data: null,
+          };
+        } else {
+          categoryRepo
+            .delete_items(categoryId)
+            .then((data) => {
+              return data;
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-    obj = await categoryRepo.hasItems(categoryId).then(data=>{
+  return  {
+    status: 2,
+    display: "Successfully Deleted.",
+    data: null,
+  };
+}
 
-      if (data > 0) {
-        return {
-          status: 400,
-          display: "Sub Category In a Relationship.",
-          data: null,
-        };
-      } else {
-        return categoryRepo.delete_category_two(categoryId).then((data) => {
-            return data;
-          }) .catch((err) => {
-            console.log(err);
-          });
+async function get_all_categories_for_user(userId){
+
+  try {
+
+    const categoriesList =await categoryRepo.get_all_categories_for_user(userId);
+   
+    for (let index = 0; index < categoriesList.length; index++) {
+      let subCategories =  await categoryRepo.get_all_sub_categories_for_category(categoriesList[index].id);
+      categoriesList[index].subCategories =subCategories;
+
+      if(categoriesList[index].subCategories!==undefined){
+        for (let i = 0; i <categoriesList[index].subCategories.length; i++) {
+          let items =  await categoryRepo.get_all_Items_for_sub_category(categoriesList[index].subCategories[i].id);
+          categoriesList[index].subCategories[i].items =items;
+        }
       }
 
-    }).catch(err=>{
-      console.log(err);
-    })
-
-
-  } else {
+    }
+    return categoriesList
+    
+  } catch (error) {
+    console.log(error);
   }
-  return obj;
+  return null;
+}
+
+async function update_categories_items(category){
+
+  let obj =null;
+
+  try {
+
+    if(!category){
+      return{
+        status:400,
+        display:'Object Not Found For Update.',
+        data:null
+      }
+    }
+
+    if(category.level==1){
+      obj=await categoryRepo.update_category(category);
+    }else if(category.level==2){
+      obj=await categoryRepo.update_sub_category(category);
+    }else{
+      obj=await categoryRepo.update_items(category);
+    }
+    return obj;
+  } catch (error) {
+    console.log(error);
+  }
+  return null;
 }

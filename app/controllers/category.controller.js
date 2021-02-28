@@ -15,11 +15,8 @@ exports.create =async(req, res, next)=>{
   
     let obj =req.body;
     obj.userId =req.user;
-    console.log('CCC->>> ');
 
-    // validation part should be done here
     categoryService.create_category(obj).then(data=>{
-        console.log('CCC->>> ',data);
         return res.status(200).send(data);
     }).catch(err=>{
         console.log('Err___ ',err);
@@ -33,11 +30,43 @@ exports.delete =async(req, res, next)=>{
     const categoryId = req.params.categoryId;
     const levelCode = req.params.levelCode;
 
-    console.log('Calling',levelCode);
-
     categoryService.delete_category({categoryId,levelCode}).then(data=>{
-        console.log('CCC->>> ',data);
         return res.status(200).send(data);
+    }).catch(err=>{
+        console.log('Err___ ',err);
+        return res.status(500).send(err_500);
+    })
+
+};
+
+exports.get_all_categories =async(req, res, next)=>{
+
+    let obj =req.body;
+    userId =req.user.id;
+
+    console.log("Calling.....");
+
+    categoryService.get_all_categories_for_user(userId).then(data=>{
+        return res.status(200).send({
+            status:200,
+            display:'Success',
+            data:data
+        });
+    }).catch(err=>{
+        console.log('Err___ ',err);
+        return res.status(500).send(err_500);
+    })
+
+};
+
+exports.update_category =async(req, res, next)=>{
+
+    categoryService.update_categories_items(req.body).then(data=>{
+        return res.status(200).send({
+            status:200,
+            display:'Success',
+            data:data
+        });
     }).catch(err=>{
         console.log('Err___ ',err);
         return res.status(500).send(err_500);
