@@ -1,5 +1,5 @@
-const express = require("express");
-const router = express.Router();
+// const express = require("express");
+// const router = express.Router();
 const categoryRepo = require("../dao/category.repository");
 
 module.exports = {
@@ -23,7 +23,7 @@ async function create_category(category_obj) {
     user_id: category_obj.userId.id,
   };
 
-  if (category_obj.level === 1) {
+  if (category_obj.level == 1) {
     obj = await categoryRepo
       .create_level_one_category(convertObject)
       .then((data) => {
@@ -32,7 +32,7 @@ async function create_category(category_obj) {
       .catch((err) => {
         console.log(err);
       });
-  } else if (category_obj.level === 2) {
+  } else if (category_obj.level == 2) {
     if (!category_obj.parentId) {
       return {
         status: 400,
@@ -41,6 +41,7 @@ async function create_category(category_obj) {
       };
     }
     convertObject.categoryId = category_obj.parentId;
+    console.log('C--->>',convertObject);
     obj = await categoryRepo
       .create_level_two_category(convertObject)
       .then((data) => {
@@ -156,20 +157,61 @@ async function get_all_categories_for_user(userId){
   try {
 
     const categoriesList =await categoryRepo.get_all_categories_for_user(userId);
+
+  
+
+    const list =[]
    
     for (let index = 0; index < categoriesList.length; index++) {
+
+     let convertObj= {id:categoriesList[index].id,
+                      name :categoriesList[index].categoryName,
+                      imageId :categoriesList[index].icon,
+                      level:1
+                     }
       let subCategories =  await categoryRepo.get_all_sub_categories_for_category(categoriesList[index].id);
       categoriesList[index].subCategories =subCategories;
-
+      
       if(categoriesList[index].subCategories!==undefined){
+
+        let levelTwoCategories =[];
+
         for (let i = 0; i <categoriesList[index].subCategories.length; i++) {
+
+          let subCategory={
+                      id:categoriesList[index].subCategories[i].id,
+                       name :categoriesList[index].subCategories[i].categoryName,
+                      imageId :categoriesList[index].subCategories[i].icon,
+                      level:2
+          }
+
+          
           let items =  await categoryRepo.get_all_Items_for_sub_category(categoriesList[index].subCategories[i].id);
           categoriesList[index].subCategories[i].items =items;
+
+          let items_list=[];
+
+          for (let k = 0; k < categoriesList[index].subCategories[i].items.length; k++) {
+            
+            let item ={
+              id:categoriesList[index].subCategories[i].items[k].id,
+              name :categoriesList[index].subCategories[i].items[k].itemName,
+              imageId :categoriesList[index].subCategories[i].icon,
+              level:3
+            }
+            items_list.push(item);
+          }
+          subCategory.levelThreeCategories =items_list;
+          levelTwoCategories.push(subCategory);
+
         }
+        convertObj.levelTwoCategories=levelTwoCategories;
       }
 
+      list.push(convertObj);
+
     }
-    return categoriesList
+    return list
     
   } catch (error) {
     console.log(error);

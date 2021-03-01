@@ -1,7 +1,6 @@
-const express = require('express');
-const router = express.Router();
+// const express = require('express');
+// const router = express.Router();
 const categoryService = require('../services/category.service');
-var axios = require('axios');
 const { static } = require('express');
 const err_500 ={
     status:500,
@@ -17,7 +16,7 @@ exports.create =async(req, res, next)=>{
     obj.userId =req.user;
 
     categoryService.create_category(obj).then(data=>{
-        return res.status(200).send(data);
+        return res.send(data);
     }).catch(err=>{
         console.log('Err___ ',err);
         return res.status(500).send(err_500);
