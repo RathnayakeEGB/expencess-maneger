@@ -1,7 +1,10 @@
 const shop_repository = require("../dao/shop.repository");
 
 module.exports = {
-    create_shop
+    create_shop,
+    find_all_shops_for_user,
+    findById,
+    findByName_for_user
 };
 
 
@@ -27,3 +30,34 @@ async function create_shop(shop_object){
     }
 }
 
+async function find_all_shops_for_user(userId){
+
+    try {
+        return await  shop_repository.find_all_shops_for_user(userId);
+        
+    } catch (error) {
+        console.log(error);
+        return null ;
+    }
+}
+
+async function findById(userId){
+
+    try {
+        return await  shop_repository.find_all_shops_for_user(userId);
+        
+    } catch (error) {
+        console.log(error);
+        return null ;
+    }
+}
+
+async function findByName_for_user(name,userId){
+
+    try {
+        return await  shop_repository.shop_findByName_for_user(name,userId);
+    } catch (error) {
+        console.log(error);
+        return null ;
+    }
+}
