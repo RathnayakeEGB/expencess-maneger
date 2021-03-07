@@ -33,15 +33,13 @@ async function findUserByEmail (email) {
 
 async function createUser (user) {
  
- usersMgt.create(user).then((obj) => {
+ return await usersMgt.create(user).then((obj) => {
    obj.password=null;
     return obj;
   }).catch((err) => {
     console.log(err);
     return 500;
   });
-
-  return user
 
 }
 

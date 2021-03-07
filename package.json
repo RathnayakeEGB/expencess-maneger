@@ -4,21 +4,26 @@
   "description": "this project is creating for exprience",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --reporter spec"
   },
   "author": "rathnayakaegb.soft@gmail.com",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "chai": "^4.3.3",
+    "chai-http": "^4.3.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mocha": "^8.3.1",
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
+    "request": "^2.88.2",
     "sequelize": "^6.5.0"
   },
   "devDependencies": {

@@ -9,6 +9,7 @@ module.exports={
     is_already_created_account,
     account_find_by_id_for_user,
     account_find_by_name_for_user
+    ,update_account
 }
 
 async function create_new_bank_account(object_account){
@@ -63,6 +64,19 @@ async function get_all_accounts(userId){
         type: QueryTypes.SELECT
       }
     );
+    return object;
+  
+  }
+
+  async function update_account(account_obj){
+
+    const object = await sequelize.update(account_obj,{
+      where: { id: account_obj.id }
+    }).then(data=>{
+      return data;
+    }).catch(err=>{
+      console.log(err);
+    })
     return object;
   
   }
