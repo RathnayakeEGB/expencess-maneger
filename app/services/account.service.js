@@ -1,5 +1,6 @@
 const accountRepository = require("../dao/account.repository");
-
+const { ReturnObject } = require('../utils/manage_response');
+const responseMessages=require('../utils/manage_response');
 module.exports ={
     create_new_account ,
     get_all_accounts,
@@ -14,30 +15,27 @@ async function create_new_account(object_account){
        let count = await accountRepository. is_already_created_account(object_account.userId,object_account.accountName);
     
        if(count>0){
-           return{
-                status:400,
-                display:'Account Already Created.',
-                data:null
-           }
+           return   new ReturnObject(400,'OK',{'description':'Account already created'},count);
+
        }
 
-        return await  accountRepository.create_new_bank_account(object_account);
+         let data =await  accountRepository.create_new_bank_account(object_account);
+         return new ReturnObject(200,'OK',{'description':'Account successfully created'},data);
         
     } catch (error) {
         console.log(error);
-        return null ;
+        return  await responseMessages.internalServerError('Error.') ;
     }
 }
 
 async function get_all_accounts(userId){
 
     try {
-
-        return await  accountRepository.get_all_accounts(userId);
-        
+        let data =await accountRepository.get_all_accounts(userId);
+        return await responseMessages.finding_response_success('success',data);
     } catch (error) {
         console.log(error);
-        return null ;
+        return await responseMessages.internalServerError('Error.') ;
     }
 }
 
@@ -46,11 +44,12 @@ async function account_find_by_id_for_user(id,userId){
 
     try {
 
-        return await  accountRepository.account_find_by_id_for_user(id,userId);
-        
+        let data = await  accountRepository.account_find_by_id_for_user(id,userId);
+        return responseMessages.finding_response_success('success',data);
+
     } catch (error) {
         console.log(error);
-        return null ;
+        return  await responseMessages.internalServerError('Error.') ;
     }
 }
 
@@ -59,10 +58,11 @@ async function account_find_by_name(userId,accountName){
 
     try {
 
-        return await  accountRepository.account_find_by_name_for_user(userId,accountName);
-        
+        let data = await  accountRepository.account_find_by_name_for_user(userId,accountName);
+        return await responseMessages.finding_response_success('success',data);
+
     } catch (error) {
         console.log(error);
-        return null ;
+        return  await responseMessages.internalServerError('Error.') ;
     }
 }

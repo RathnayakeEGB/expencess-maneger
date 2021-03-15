@@ -1,5 +1,5 @@
 const accountService = require('../services/account.service');
-const { static } = require('express');
+const { ReturnObject } = require('../utils/manage_response');
 
 const err_500 ={
     status:500,
@@ -13,7 +13,7 @@ exports.create =async(req, res, next)=>{
     obj.userId =req.user.id
 
     accountService.create_new_account(obj).then(data=>{
-        return res.send(data);
+        return res.status(200).send(data);
     }).catch(err=>{
         console.log('Err___ ',err);
         return res.status(500).send(err_500);

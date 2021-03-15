@@ -1,9 +1,12 @@
+import { ReturnObject } from "../utils/returnObj";
+
 const transaction_repository = require("../dao/transaction.repository");
 const account_repository = require("../dao/account.repository");
 
 
 module.exports ={
-    create_new_account
+    create_new_account,
+    deletedTransaction
 }
 
 async function create_new_account(trans_obj){
@@ -34,5 +37,23 @@ async function create_new_account(trans_obj){
     } catch (error) {
         console.log(error);
         return null ;
+    }
+
+
+}
+
+
+async function deletedTransaction(trans_obj) {
+
+    try {
+
+
+        if(trans_obj.transactionType==='E'){
+
+        }
+
+        
+    } catch (error) {
+        console.log(error);
     }
 }
